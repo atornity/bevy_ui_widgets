@@ -1,10 +1,5 @@
 use bevy::prelude::*;
-use bevy_ui_widgets::{
-    components::{
-        toggle::Toggle,
-    },
-    *,
-};
+use bevy_ui_widgets::{components::toggle::Toggle, *};
 
 fn main() {
     App::new()
@@ -19,9 +14,9 @@ const TOGGLE_OFF_COLOR: Color = Color::rgb(0.15, 0.15, 0.15);
 const TOGGLE_ON_COLOR: Color = Color::rgb(0.35, 0.75, 0.35);
 
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
     commands
-        .spawn_bundle(ButtonBundle {
+        .spawn(ButtonBundle {
             style: Style {
                 size: Size::new(Val::Px(150.0), Val::Px(65.0)),
                 // center button
@@ -32,15 +27,16 @@ fn setup(mut commands: Commands) {
                 align_items: AlignItems::Center,
                 ..default()
             },
-            color: TOGGLE_OFF_COLOR.into(),
+            background_color: BackgroundColor(TOGGLE_OFF_COLOR),
             ..default()
         })
         .insert(Toggle::default());
 }
 
+#[allow(clippy::type_complexity)]
 fn toggle_color(
     mut query: Query<
-        (&Toggle, &Interaction, &mut UiColor),
+        (&Toggle, &Interaction, &mut BackgroundColor),
         Or<(Changed<Toggle>, Changed<Interaction>)>,
     >,
 ) {
@@ -52,8 +48,8 @@ fn toggle_color(
         };
 
         color.0 = match toggle {
-            Toggle::Off => lighten(TOGGLE_OFF_COLOR, lighten_value).into(),
-            Toggle::On => lighten(TOGGLE_ON_COLOR, lighten_value).into(),
+            Toggle::Off => lighten(TOGGLE_OFF_COLOR, lighten_value),
+            Toggle::On => lighten(TOGGLE_ON_COLOR, lighten_value),
         }
     }
 }

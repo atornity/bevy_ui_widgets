@@ -12,14 +12,17 @@ fn main() {
         .run();
 }
 
+#[derive(Resource)]
 struct MyTooltipTextNode(Entity);
+
+#[derive(Resource)]
 struct Counter(pub u32);
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 
     let text = commands
-        .spawn_bundle(TextBundle {
+        .spawn(TextBundle {
             text: Text::from_section(
                 "0",
                 TextStyle {

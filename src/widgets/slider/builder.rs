@@ -1,10 +1,9 @@
 use bevy_ecs::{prelude::*, system::EntityCommands};
 use bevy_hierarchy::prelude::*;
 use bevy_render::prelude::*;
-use bevy_ui::{entity::*, *};
 use bevy_utils::*;
 
-use crate::{utils::*, components::grab::Grab};
+use crate::{components::grab::Grab, utils::*};
 
 use super::*;
 
@@ -49,7 +48,7 @@ impl<'a, 'w, 's> SliderWidgetBuilder<'a, 'w, 's> {
                     },
                     ..default()
                 },
-                color: Color::rgb(0.25, 0.25, 0.25).into(),
+                background_color: BackgroundColor(Color::rgb(0.25, 0.25, 0.25)),
                 ..default()
             })),
             thumb: WidgetBuilderEntity::new(Some(NodeBundle {
@@ -61,7 +60,7 @@ impl<'a, 'w, 's> SliderWidgetBuilder<'a, 'w, 's> {
                     },
                     ..default()
                 },
-                color: Color::rgb(0.25, 0.25, 0.25).into(),
+                background_color: BackgroundColor(Color::rgb(0.25, 0.25, 0.25)),
                 ..default()
             })),
         }
@@ -120,19 +119,19 @@ impl<'a, 'w, 's> SliderWidgetBuilder<'a, 'w, 's> {
     /// created and destroyed
     pub fn spawn(&mut self, commands: &'a mut Commands<'w, 's>) -> SliderWidgetEntities {
         let root = commands
-            .spawn_bundle(self.root.bundle.take().unwrap())
+            .spawn(self.root.bundle.take().unwrap())
             .run_entity_commands(&self.root.commands_runners)
             .id();
 
         let track = commands
-            .spawn_bundle(self.track.bundle.take().unwrap())
+            .spawn(self.track.bundle.take().unwrap())
             .run_entity_commands(&self.track.commands_runners)
             .insert(SliderTrackNode)
             .insert(WidgetRoot(root))
             .id();
 
         let thumb = commands
-            .spawn_bundle(self.thumb.bundle.take().unwrap())
+            .spawn(self.thumb.bundle.take().unwrap())
             .run_entity_commands(&self.thumb.commands_runners)
             .insert(Interaction::None)
             .insert(Grab)
@@ -142,10 +141,6 @@ impl<'a, 'w, 's> SliderWidgetBuilder<'a, 'w, 's> {
 
         commands.entity(root).push_children(&[track, thumb]);
 
-        SliderWidgetEntities {
-            root,
-            track,
-            thumb,
-        }
+        SliderWidgetEntities { root, track, thumb }
     }
 }

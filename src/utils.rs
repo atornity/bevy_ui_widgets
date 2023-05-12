@@ -12,7 +12,7 @@ pub fn get_uinode_clipped_rect(
 ) -> (Vec2, Vec2) {
     let position = global_transform.translation();
     let ui_position = position.truncate();
-    let extents = node.size / 2.0;
+    let extents = node.size() / 2.0;
     let mut min = ui_position - extents;
     let mut max = ui_position + extents;
     if let Some(clip) = clip {
@@ -27,7 +27,6 @@ pub fn get_uinode_clipped_rect(
 /// This uses a SmallVec to optimize space since two entries should be enough for 90% of use-cases.
 pub type EntityCommandsRunnersVec<'a, 'w, 's> =
     SmallVec<[Box<dyn for<'b> Fn(&mut EntityCommands<'w, 's, 'b>) + 'a>; 2]>;
-
 
 pub struct WidgetBuilderEntity<'a, 'w, 's, TBundle> {
     pub commands_runners: EntityCommandsRunnersVec<'a, 'w, 's>,

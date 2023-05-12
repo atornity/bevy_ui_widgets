@@ -11,11 +11,11 @@ pub(crate) fn slider_tooltip(
     added_slider_q: Query<(Entity, &SliderTooltip), Added<SliderTooltip>>,
     thumb_q: Query<(Entity, &WidgetRoot), With<SliderThumbNode>>,
     tooltip_q: Query<(Entity, &WidgetRoot)>,
-    removed: RemovedComponents<SliderTooltip>,
+    mut removed: RemovedComponents<SliderTooltip>,
 ) {
     for (root, slider_tooltip) in added_slider_q.iter() {
         let text = commands
-            .spawn_bundle(TextBundle {
+            .spawn(TextBundle {
                 text: Text::from_section("0", slider_tooltip.text_style.clone()),
                 ..default()
             })
@@ -39,7 +39,7 @@ pub(crate) fn slider_tooltip(
 
         commands
             .entity(tooltip.root)
-            .insert(UiColor(slider_tooltip.color))
+            .insert(BackgroundColor(slider_tooltip.color))
             .insert(SliderTooltipNode)
             .insert(WidgetRoot(root));
     }
@@ -56,11 +56,7 @@ pub(crate) fn slider_tooltip(
 /// TODO: Fix the change detection query. Otherwise this copies the style object every frame.
 pub(crate) fn slider_tooltip_update(
     slider_q: Query<&SliderTooltip /*, Or<(Changed<SliderTooltip>, Changed<Children>)>*/>,
-    mut tooltip_q: Query<(
-        &WidgetRoot,
-        &TooltipUiNodes,
-        &mut UiColor,
-    )>,
+    mut tooltip_q: Query<(&WidgetRoot, &TooltipUiNodes, &mut BackgroundColor)>,
     mut tooltip_text_q: Query<&mut Text, With<TooltipTextUiNode>>,
 ) {
     for (root, nodes, mut color) in tooltip_q.iter_mut() {

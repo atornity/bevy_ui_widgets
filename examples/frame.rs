@@ -18,10 +18,10 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 
     let text = commands
-        .spawn_bundle(TextBundle {
+        .spawn(TextBundle {
             style: Style { ..default() },
             text: Text::from_section(
                 "Slider:",
@@ -46,20 +46,20 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         .spawn(&mut commands);
 
     let section = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
                 ..default()
             },
-            color: Color::NONE.into(),
+            background_color: BackgroundColor(Color::NONE),
             ..default()
         })
         .push_children(&[text, slider.root])
         .id();
 
     let content = commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 flex_grow: 1.0,
                 flex_direction: FlexDirection::ColumnReverse,
@@ -68,7 +68,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 margin: UiRect::all(Val::Px(5.0)),
                 ..default()
             },
-            color: Color::NONE.into(),
+            background_color: BackgroundColor(Color::NONE),
             ..default()
         })
         .push_children(&[section])
@@ -86,11 +86,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 size: Size::new(Val::Px(250.0), Val::Undefined),
                 ..bundle.style
             },
-            color: Color::rgb(0.05, 0.05, 0.05).into(),
+            background_color: BackgroundColor(Color::rgb(0.05, 0.05, 0.05)),
             ..bundle
         })
         .title_bar_bundle(|bundle| ButtonBundle {
-            color: Color::rgb(0.15, 0.15, 0.15).into(),
+            background_color: BackgroundColor(Color::rgb(0.15, 0.15, 0.15)),
             ..bundle
         })
         .title_text_bundle(|bundle| TextBundle {
@@ -110,14 +110,14 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 align_items: AlignItems::Center,
                 ..bundle.style
             },
-            color: Color::rgb(0.15, 0.15, 0.15).into(),
+            background_color: BackgroundColor(Color::rgb(0.15, 0.15, 0.15)),
             ..bundle
         })
         .close_button_commands(|commands| {
             let button = commands.id();
             let text = commands
                 .commands()
-                .spawn_bundle(TextBundle {
+                .spawn(TextBundle {
                     text: Text::from_section(
                         "-",
                         TextStyle {
@@ -156,6 +156,7 @@ struct Content {
     frame_entity: Entity,
 }
 
+#[allow(clippy::type_complexity)]
 fn minimize_button(
     button_query: Query<(Entity, &RootEntity, &Toggle), (With<MinimizeButton>, Changed<Toggle>)>,
     mut button_text_query: Query<(&RootEntity, &mut Text), With<MinimizeButtonText>>,

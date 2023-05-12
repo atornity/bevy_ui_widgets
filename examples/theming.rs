@@ -11,30 +11,36 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, mut theme: ResMut<ThemeManager>) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 
     // static theme variables
     theme
         .set_property("root", FlexDirectionProperty(FlexDirection::ColumnReverse))
         .set_property("root", JustifyContentProperty(JustifyContent::Center))
         .set_property("root", AlignItemsProperty(AlignItems::Center))
-        .set_property("root", SizeProperty(Size::new(Val::Percent(100.0), Val::Percent(100.0))))
+        .set_property(
+            "root",
+            SizeProperty(Size::new(Val::Percent(100.0), Val::Percent(100.0))),
+        )
         .set_property("root", ColorProperty(Color::WHITE))
         .set_property("button", JustifyContentProperty(JustifyContent::Center))
         .set_property("button", AlignItemsProperty(AlignItems::Center))
         .set_property("button", PaddingProperty(UiRect::all(Val::Px(10.0))))
         .set_property("button", ColorProperty(Color::rgb(0.15, 0.15, 0.15)))
-        .set_property("text", TextFontPathProperty("fonts/FiraSans-Bold.ttf".into()))
+        .set_property(
+            "text",
+            TextFontPathProperty("fonts/FiraSans-Bold.ttf".into()),
+        )
         .set_property("text", TextFontSizeProperty(20.0))
         .set_property("text", TextColorProperty(Color::RED));
 
     let root = commands
-        .spawn_bundle(NodeBundle::default())
+        .spawn(NodeBundle::default())
         .insert(ThemeKey("root".into()))
         .id();
 
     let text = commands
-        .spawn_bundle(TextBundle::from_section(
+        .spawn(TextBundle::from_section(
             "Click here to toggle theme",
             default(),
         ))
@@ -42,7 +48,7 @@ fn setup(mut commands: Commands, mut theme: ResMut<ThemeManager>) {
         .id();
 
     let button = commands
-        .spawn_bundle(ButtonBundle::default())
+        .spawn(ButtonBundle::default())
         .insert(ThemeKey("button".into()))
         .insert(Toggle::default())
         .add_child(text)

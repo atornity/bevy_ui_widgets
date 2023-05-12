@@ -18,14 +18,10 @@ pub struct ThemingPlugin;
 // Plugin that enables the systems for the theming module
 impl Plugin for ThemingPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(ThemeManager::new())
-            .add_system_set_to_stage(
-                CoreStage::PreUpdate,
-                SystemSet::new()
-                    .with_system(update_color)
-                    .with_system(update_style)
-                    .with_system(update_text_nodes),
-            );
+        app.insert_resource(ThemeManager::new());
+        app.add_systems(
+            (update_color, update_style, update_text_nodes).in_base_set(CoreSet::PreUpdate),
+        );
     }
 }
 
@@ -38,7 +34,10 @@ impl From<&str> for ThemeKey {
     }
 }
 
-fn update_color(theme: Option<Res<ThemeManager>>, mut query: Query<(&ThemeKey, &mut UiColor)>) {
+fn update_color(
+    theme: Option<Res<ThemeManager>>,
+    mut query: Query<(&ThemeKey, &mut BackgroundColor)>,
+) {
     if let Some(theme) = theme.filter(|style| style.is_added() || style.is_changed()) {
         for (key, mut value) in query.iter_mut() {
             if let Some(property) = theme
@@ -99,13 +98,8 @@ fn update_text_nodes(
     if let Some(theme) = theme.filter(|style| style.is_added() || style.is_changed()) {
         for (key, mut text) in query.iter_mut() {
             if let Some(property) = theme.get_property::<TextHorizontalAlignProperty>(&key.0) {
-                if text.alignment.horizontal != property.0 {
-                    text.alignment.horizontal = property.0;
-                }
-            }
-            if let Some(property) = theme.get_property::<TextVerticalAlignProperty>(&key.0) {
-                if text.alignment.vertical != property.0 {
-                    text.alignment.vertical = property.0;
+                if text.alignment != property.0 {
+                    text.alignment = property.0;
                 }
             }
             if let Some(property) = theme.get_property::<TextColorProperty>(&key.0) {
@@ -120,9 +114,9 @@ fn update_text_nodes(
             }
             if let Some(property) = theme.get_property::<TextFontPathProperty>(&key.0) {
                 text.sections.iter_mut().for_each(|section| {
-                    let font_path = asset_server
-                        .get_handle_path(section.style.font.clone());
-                    if font_path.map_or(true, |path| path.path().as_os_str() != property.0.as_str()) {
+                    let font_path = asset_server.get_handle_path(section.style.font.clone());
+                    if font_path.map_or(true, |path| path.path().as_os_str() != property.0.as_str())
+                    {
                         section.style.font = asset_server.load(&property.0);
                     }
                 })

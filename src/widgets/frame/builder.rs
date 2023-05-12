@@ -56,7 +56,7 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
                     },
                     ..default()
                 },
-                color: Color::NONE.into(),
+                background_color: BackgroundColor(Color::NONE),
                 ..default()
             })),
             title_text: WidgetBuilderEntity::new(Some(TextBundle {
@@ -105,7 +105,10 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
 
     /// Allows to edit the title bar bundle before it is spawned.
     /// It is recommended to keep unmodified original values by using the struct extend syntax `..`.
-    pub fn title_bar_bundle(&mut self, extend: impl FnOnce(ButtonBundle) -> ButtonBundle) -> &mut Self {
+    pub fn title_bar_bundle(
+        &mut self,
+        extend: impl FnOnce(ButtonBundle) -> ButtonBundle,
+    ) -> &mut Self {
         self.title_bar.bundle = Some(extend(self.title_bar.bundle.take().unwrap()));
         self
     }
@@ -115,13 +118,18 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
         &mut self,
         run_commands: impl for<'b> Fn(&mut EntityCommands<'w, 's, 'b>) + 'a,
     ) -> &mut Self {
-        self.title_text.commands_runners.push(Box::new(run_commands));
+        self.title_text
+            .commands_runners
+            .push(Box::new(run_commands));
         self
     }
 
     /// Allows to edit the title text bundle before it is spawned.
     /// It is recommended to keep unmodified original values by using the struct extend syntax `..`.
-    pub fn title_text_bundle(&mut self, extend: impl FnOnce(TextBundle) -> TextBundle) -> &mut Self {
+    pub fn title_text_bundle(
+        &mut self,
+        extend: impl FnOnce(TextBundle) -> TextBundle,
+    ) -> &mut Self {
         self.title_text.bundle = Some(extend(self.title_text.bundle.take().unwrap()));
         self
     }
@@ -131,13 +139,18 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
         &mut self,
         run_commands: impl for<'b> Fn(&mut EntityCommands<'w, 's, 'b>) + 'a,
     ) -> &mut Self {
-        self.close_button.commands_runners.push(Box::new(run_commands));
+        self.close_button
+            .commands_runners
+            .push(Box::new(run_commands));
         self
     }
 
     /// Allows to edit the title close button bundle before it is spawned.
     /// It is recommended to keep unmodified original values by using the struct extend syntax `..`.
-    pub fn close_button_bundle(&mut self, extend: impl FnOnce(ButtonBundle) -> ButtonBundle) -> &mut Self {
+    pub fn close_button_bundle(
+        &mut self,
+        extend: impl FnOnce(ButtonBundle) -> ButtonBundle,
+    ) -> &mut Self {
         self.close_button.bundle = Some(extend(self.close_button.bundle.take().unwrap()));
         self
     }
@@ -153,13 +166,13 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
     /// Using the builder again after calling this will panic.
     pub fn spawn(&mut self, commands: &'a mut Commands<'w, 's>) -> FrameWidgetEntities {
         let root = commands
-            .spawn_bundle(self.root.bundle.take().unwrap())
+            .spawn(self.root.bundle.take().unwrap())
             .insert(Frame)
             .run_entity_commands(&self.root.commands_runners)
             .id();
 
         let title_bar = commands
-            .spawn_bundle(self.title_bar.bundle.take().unwrap())
+            .spawn(self.title_bar.bundle.take().unwrap())
             .insert(RootEntity(root))
             .insert(Grab)
             .insert(FrameGrabber)
@@ -167,13 +180,13 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
             .id();
 
         let title_text = commands
-            .spawn_bundle(self.title_text.bundle.take().unwrap())
+            .spawn(self.title_text.bundle.take().unwrap())
             .insert(RootEntity(root))
             .run_entity_commands(&self.title_text.commands_runners)
             .id();
 
         let close_button = commands
-            .spawn_bundle(self.close_button.bundle.take().unwrap())
+            .spawn(self.close_button.bundle.take().unwrap())
             .insert(RootEntity(root))
             .run_entity_commands(&self.close_button.commands_runners)
             .id();
@@ -193,6 +206,6 @@ impl<'a, 'w, 's> FrameWidgetBuilder<'a, 'w, 's> {
             title_text,
             close_button,
             content: self.content_entity,
-        } 
+        }
     }
 }

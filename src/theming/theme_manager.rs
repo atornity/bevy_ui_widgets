@@ -1,7 +1,9 @@
+use bevy_ecs::system::Resource;
 use bevy_utils::HashMap;
 
 use super::{ThemeProperty, ThemePropertyName};
 
+#[derive(Resource)]
 pub struct ThemeManager {
     property_store: HashMap<String, Box<dyn ThemeProperty>>,
 }
@@ -19,19 +21,15 @@ impl ThemeManager {
     {
         self.property_store
             .get(&format!("{}:{}", key, T::PROPERTY_NAME))
-            .and_then(|result| {
-                result.as_any().downcast_ref::<T>()
-            })
+            .and_then(|result| result.as_any().downcast_ref::<T>())
     }
 
     pub fn set_property<T>(&mut self, key: &str, property: T) -> &mut Self
     where
         T: 'static + ThemeProperty + ThemePropertyName,
     {
-        self.property_store.insert(
-            format!("{}:{}", key, T::PROPERTY_NAME),
-            Box::new(property),
-        );
+        self.property_store
+            .insert(format!("{}:{}", key, T::PROPERTY_NAME), Box::new(property));
         self
     }
 }

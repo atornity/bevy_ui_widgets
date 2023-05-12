@@ -47,16 +47,16 @@ define_property!(AlignItemsProperty, AlignItems, "align-items");
 define_property!(AlignSelfProperty, AlignSelf, "align-self");
 define_property!(AlignContentProperty, AlignContent, "align-content");
 define_property!(JustifyContentProperty, JustifyContent, "justify-content");
-define_property!(PositionProperty, UiRect<Val>, "position");
-define_property!(MarginProperty, UiRect<Val>, "margin");
-define_property!(PaddingProperty, UiRect<Val>, "padding");
-define_property!(BorderProperty, UiRect<Val>, "border");
+define_property!(PositionProperty, UiRect, "position");
+define_property!(MarginProperty, UiRect, "margin");
+define_property!(PaddingProperty, UiRect, "padding");
+define_property!(BorderProperty, UiRect, "border");
 define_property!(FlexGrowProperty, f32, "flex-grow");
 define_property!(FlexShrinkProperty, f32, "flex-shrink");
 define_property!(FlexBasisProperty, Val, "flex-basis");
-define_property!(SizeProperty, Size<Val>, "size");
-define_property!(MinSizeProperty, Size<Val>, "min-size");
-define_property!(MaxSizeProperty, Size<Val>, "max-size");
+define_property!(SizeProperty, Size, "size");
+define_property!(MinSizeProperty, Size, "min-size");
+define_property!(MaxSizeProperty, Size, "max-size");
 define_property!(AspectRatioProperty, Option<f32>, "aspect-ratio");
 define_property!(OverflowProperty, Overflow, "overflow");
 
@@ -64,8 +64,7 @@ define_property!(OverflowProperty, Overflow, "overflow");
 define_property!(TextColorProperty, Color, "color");
 define_property!(TextFontPathProperty, String, "font-path");
 define_property!(TextFontSizeProperty, f32, "font-size");
-define_property!(TextHorizontalAlignProperty, HorizontalAlign, "text-horizontal-align");
-define_property!(TextVerticalAlignProperty, VerticalAlign, "text-vertical-align");
+define_property!(TextHorizontalAlignProperty, TextAlignment, "text-align");
 
 // Define other properties
 define_property!(ColorProperty, Color, "background-color");

@@ -70,7 +70,7 @@ impl<'a, 'w, 's> TooltipWidgetBuilder<'a, 'w, 's> {
     /// Using the builder again after calling this will panic.
     pub fn spawn(&mut self, commands: &'a mut Commands<'w, 's>) -> TooltipWidgetEntities {
         let root = commands
-            .spawn_bundle(self.root.bundle.take().unwrap())
+            .spawn(self.root.bundle.take().unwrap())
             .run_entity_commands(&self.root.commands_runners)
             .id();
 

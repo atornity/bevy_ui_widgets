@@ -5,23 +5,23 @@ edition = "2021"
 
 [dependencies]
 # TODO: Change these when merged
-bevy_app = "0.8.1"
-bevy_asset = "0.8.1"
-bevy_ecs = "0.8.1"
-bevy_hierarchy = "0.8.1"
-bevy_math = "0.8.1"
-bevy_render = "0.8.1"
-bevy_text = "0.8.1"
-bevy_transform = "0.8.1"
-bevy_ui = "0.8.1"
-bevy_utils = "0.8.1"
-bevy_window = "0.8.1"
+bevy_app = "0.10.1"
+bevy_asset = "0.10.1"
+bevy_ecs = "0.10.1"
+bevy_hierarchy = "0.10.1"
+bevy_math = "0.10.1"
+bevy_render = "0.10.1"
+bevy_text = "0.10.1"
+bevy_transform = "0.10.1"
+bevy_ui = "0.10.1"
+bevy_utils = "0.10.1"
+bevy_window = "0.10.1"
 
 smallvec = "1.8.0"
 
 [dev-dependencies]
 # TODO: Change this when merged
-bevy = "0.8.1"
+bevy = "0.10.1"
 
 [[example]]
 name = "frame"

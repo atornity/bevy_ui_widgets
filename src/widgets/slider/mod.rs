@@ -12,7 +12,7 @@ mod tooltip;
 pub use builder::*;
 use tooltip::*;
 
-use crate::{components::grab::Grabbed, widgets::tooltip::*, utils::*};
+use crate::{components::grab::Grabbed, utils::*, widgets::tooltip::*};
 
 pub struct SliderPlugin;
 
@@ -21,7 +21,7 @@ impl Plugin for SliderPlugin {
         app.add_system(slider_test)
             .add_system(slider_thumb_update)
             .add_system(slider_thumb_move)
-            .add_system_to_stage(CoreStage::PreUpdate, slider_tooltip)
+            .add_system(slider_tooltip.in_base_set(CoreSet::PreUpdate))
             .add_system(slider_tooltip_update)
             .add_system(slider_tooltip_text_update)
             .add_system(slider_tooltip_visibility);
@@ -112,8 +112,8 @@ fn slider_thumb_update(
             {
                 let (min_x, max_x) = {
                     let (min, max) = get_uinode_clipped_rect(global_transform, node, clip);
-                    let min_x = min.x + (thumb_node.size.x / 2.0);
-                    let max_x = max.x - (thumb_node.size.x / 2.0);
+                    let min_x = min.x + (thumb_node.size().x / 2.0);
+                    let max_x = max.x - (thumb_node.size().x / 2.0);
                     (min_x, max_x)
                 };
                 assert!(slider.step > 0 && slider.step <= slider.max - slider.min);
@@ -150,8 +150,8 @@ fn slider_thumb_move(
 
                 let (min_x, max_x) = {
                     let (min, max) = get_uinode_clipped_rect(global_transform, node, clip);
-                    let min_x = min.x + (thumb_node.size.x / 2.0);
-                    let max_x = max.x - (thumb_node.size.x / 2.0);
+                    let min_x = min.x + (thumb_node.size().x / 2.0);
+                    let max_x = max.x - (thumb_node.size().x / 2.0);
                     (min_x, max_x)
                 };
 
@@ -181,7 +181,7 @@ pub struct SliderBundle {
     /// Describes the style including flexbox settings
     pub style: Style,
     /// Describes the color of the node
-    pub color: UiColor,
+    pub color: BackgroundColor,
     /// Describes the image of the node
     pub image: UiImage,
     /// Whether this node should block interaction with lower nodes

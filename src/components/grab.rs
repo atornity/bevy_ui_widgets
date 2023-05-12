@@ -2,7 +2,7 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_math::prelude::*;
 use bevy_ui::*;
-use bevy_window::prelude::*;
+use bevy_window::{prelude::*, PrimaryWindow};
 
 pub struct GrabComponentsPlugin;
 
@@ -10,12 +10,12 @@ pub struct GrabComponentsPlugin;
 impl Plugin for GrabComponentsPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(grab)
-            .add_system_to_stage(CoreStage::PreUpdate, grabbed_move);
+            .add_system(grabbed_move.in_base_set(CoreSet::PreUpdate));
     }
 }
 
 /// Added to a UI node that can be grabbed.
-/// 
+///
 /// If [`Interaction`] is also present, the [`Grabbed`] component will automatically be
 /// added and updated on that entity.
 #[derive(Component, Copy, Clone, Debug)]
@@ -35,14 +35,16 @@ pub struct Grabbed {
 fn grab(
     mut commands: Commands,
     query: Query<(Entity, &Interaction, Option<&Grabbed>), With<Grab>>,
-    windows: Res<Windows>,
+    // windows: Res<Windows>,
+    primary_window: Query<&Window, With<PrimaryWindow>>,
 ) {
     for (entity, interaction, grabbed) in query.iter() {
         match interaction {
             Interaction::Clicked => {
                 if grabbed.is_none() {
-                    if let Some(cursor_position) = windows
-                        .get_primary()
+                    if let Some(cursor_position) = primary_window
+                        .get_single()
+                        .ok()
                         .and_then(|window| window.cursor_position())
                     {
                         commands.entity(entity).insert(Grabbed {
@@ -62,10 +64,14 @@ fn grab(
     }
 }
 
-fn grabbed_move(mut query: Query<&mut Grabbed, With<Grab>>, windows: Res<Windows>) {
+fn grabbed_move(
+    mut query: Query<&mut Grabbed, With<Grab>>,
+    primary_window: Query<&Window, With<PrimaryWindow>>,
+) {
     for mut grabbed in query.iter_mut() {
-        if let Some(cursor_position) = windows
-            .get_primary()
+        if let Some(cursor_position) = primary_window
+            .get_single()
+            .ok()
             .and_then(|window| window.cursor_position())
         {
             let last_offset = grabbed.cursor_offset;

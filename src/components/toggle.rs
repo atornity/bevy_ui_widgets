@@ -1,5 +1,5 @@
 use bevy_app::prelude::*;
-use bevy_ecs::{prelude::*};
+use bevy_ecs::prelude::*;
 use bevy_ui::*;
 
 pub struct ToggleComponentsPlugin;
@@ -7,7 +7,7 @@ pub struct ToggleComponentsPlugin;
 // Plugin that enables the systems for the toggle components
 impl Plugin for ToggleComponentsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_to_stage(CoreStage::PreUpdate, toggle);
+        app.add_system(toggle.in_base_set(CoreSet::PreUpdate));
     }
 }
 
